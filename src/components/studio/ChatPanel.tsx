@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { ChatMessage, StudioSession, upsertSession } from "@/lib/session";
+import gsap from "gsap";
 
 type Props = {
   session: StudioSession;
@@ -14,9 +15,18 @@ export default function ChatPanel({ session, onSessionChange }: Props) {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const messageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+    if (listRef.current) {
+      listRef.current.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+    }
+    if (session.messages.length > 0 && messageRefs.current[session.messages.length - 1]) {
+      gsap.fromTo(messageRefs.current[session.messages.length - 1],
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }
+      );
+    }
   }, [session.messages.length]);
 
   function appendMessage(msg: ChatMessage) {
@@ -81,8 +91,8 @@ export default function ChatPanel({ session, onSessionChange }: Props) {
       </div>
       <ScrollArea ref={listRef} className="flex-1 px-4 py-4">
         <div className="space-y-4">
-          {session.messages.map((m) => (
-            <div key={m.id} className="text-sm">
+          {session.messages.map((m, index) => (
+            <div key={m.id} ref={el => messageRefs.current[index] = el} className="text-sm">
               <div className="text-muted-foreground mb-1">{m.role === "user" ? "You" : "Arca"}</div>
               <div className="whitespace-pre-wrap leading-relaxed">{m.content}</div>
               <Separator className="my-4" />
