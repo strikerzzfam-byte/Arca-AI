@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Arca AI Futuristic Design System */
+    --background: 220 70% 8%;
+    --foreground: 0 0% 98%;
+
+    --card: 220 60% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 220 60% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 190 100% 50%;
+    --primary-foreground: 220 70% 8%;
+
+    --secondary: 220 50% 20%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 220 40% 18%;
+    --muted-foreground: 220 20% 60%;
+
+    --accent: 190 100% 50%;
+    --accent-foreground: 220 70% 8%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 50% 25%;
+    --input: 220 50% 20%;
+    --ring: 190 100% 50%;
+
+    --radius: 1rem;
+
+    /* Custom Arca AI tokens */
+    --midnight-blue: 220 70% 8%;
+    --electric-cyan: 190 100% 50%;
+    --soft-white: 0 0% 98%;
+    --glass-bg: 220 60% 12%;
+    --glass-border: 190 80% 50%;
+    --neon-glow: 190 100% 50%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220, 70%, 15%) 0%, hsl(190, 100%, 30%) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(190, 100%, 50%) 0%, hsl(220, 100%, 60%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(220, 70%, 8%) 0%, hsl(220, 60%, 12%) 50%, hsl(220, 70%, 8%) 100%);
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism */
+  .glass-card {
+    background-color: hsl(var(--card) / 0.4);
+    backdrop-filter: blur(24px);
+    border: 1px solid hsl(190 80% 50% / 0.2);
+  }
+  
+  .glass-strong {
+    background-color: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(40px);
+    border: 1px solid hsl(190 80% 50% / 0.3);
+  }
+
+  /* Neon effects */
+  .neon-text {
+    color: hsl(var(--primary));
+    text-shadow: 0 0 20px hsl(var(--electric-cyan) / 0.5),
+                 0 0 40px hsl(var(--electric-cyan) / 0.3);
+  }
+
+  .neon-border {
+    box-shadow: 0 0 20px hsl(var(--electric-cyan) / 0.3),
+                inset 0 0 20px hsl(var(--electric-cyan) / 0.1);
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
