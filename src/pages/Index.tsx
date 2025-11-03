@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { 
   Sparkles, 
@@ -64,6 +65,8 @@ const Index = () => {
       transition: { duration: 0.6 }
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -143,7 +146,7 @@ const Index = () => {
                 transition={{ delay: 0.4 }}
                 className="flex flex-wrap gap-4"
               >
-                <Button size="lg" className="gradient-accent text-lg px-8 py-6 group">
+                <Button size="lg" className="gradient-accent text-lg px-8 py-6 group" onClick={() => navigate('/try')}>
                   Try for Free
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
