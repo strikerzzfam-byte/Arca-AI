@@ -329,9 +329,19 @@ const Index = () => {
                     <p className="text-2xl font-bold">Interactive Demo</p>
                     <p className="text-muted-foreground">Type → AI Generates → Output</p>
                   </div>
-                  <Button size="lg" className="gradient-accent">
-                    Watch Demo
-                  </Button>
+                  <div className="flex gap-4 justify-center">
+                    <Button size="lg" className="gradient-accent" onClick={() => navigate('/studio?tab=code')}>
+                      View Code
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="glass-card hover:neon-border"
+                      onClick={() => navigate('/studio')}
+                    >
+                      Watch Demo
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Animated lines in background */}

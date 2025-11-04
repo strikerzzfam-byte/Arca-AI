@@ -1,10 +1,11 @@
 type Props = {
   title: string;
   prompt: string;
+  generatedCode?: string;
 };
 
-export default function PreviewFrame({ title, prompt }: Props) {
-  const html = `<!doctype html>
+export default function PreviewFrame({ title, prompt, generatedCode }: Props) {
+  const defaultHtml = `<!doctype html>
   <html>
     <head>
       <meta charset="utf-8" />
@@ -22,11 +23,14 @@ export default function PreviewFrame({ title, prompt }: Props) {
     <body>
       <div class="hero">
         <h1>Preview</h1>
-        <p>This is a lightweight preview scaffold for: <strong>${escapeHtml(prompt)}</strong></p>
-        <div class="box">Project files will render here once connected to a real build.</div>
+        <p>Type a prompt in the chat to generate a website!</p>
+        ${prompt ? `<p>Last prompt: <strong>${escapeHtml(prompt)}</strong></p>` : ''}
+        <div class="box">Generated website will appear here...</div>
       </div>
     </body>
   </html>`;
+
+  const html = generatedCode || defaultHtml;
 
   return (
     <iframe title="preview" srcDoc={html} className="w-full h-full rounded-md border" />

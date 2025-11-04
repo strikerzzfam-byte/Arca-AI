@@ -14,6 +14,11 @@ export type StudioSession = {
   planEnabled: boolean;
   messages: ChatMessage[];
   logs: string[];
+  githubToken?: string;
+  projectName: string;
+  generatedCode?: string;
+  files?: Record<string, string>;
+  mainFile?: string;
 };
 
 function loadAll(): Record<string, StudioSession> {
@@ -33,11 +38,16 @@ export function createSession(seed: Partial<StudioSession>): StudioSession {
   const id = crypto.randomUUID();
   const session: StudioSession = {
     id,
-    prompt: seed.prompt || "",
+    prompt: seed.prompt || "Create a modern web application",
     agent: seed.agent || "claude",
     planEnabled: !!seed.planEnabled,
     messages: seed.messages || [],
-    logs: seed.logs || [],
+    logs: seed.logs || ["Session created", "Ready to build your application"],
+    githubToken: seed.githubToken,
+    projectName: seed.projectName || "Arca AI Project",
+    generatedCode: seed.generatedCode,
+    files: seed.files,
+    mainFile: seed.mainFile,
   };
   const all = loadAll();
   all[id] = session;

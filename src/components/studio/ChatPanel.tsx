@@ -4,6 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { ChatMessage, StudioSession, upsertSession } from "@/lib/session";
+import { generateWebsite, updateWebsite } from "@/lib/ai";
+import { toast } from "sonner";
 import gsap from "gsap";
 
 type Props = {
@@ -49,39 +51,57 @@ export default function ChatPanel({ session, onSessionChange }: Props) {
     fakeAssistant(trimmed);
   };
 
-  function fakeAssistant(prompt: string) {
+  async function fakeAssistant(prompt: string) {
     setStreaming(true);
-    const base = `Okay, I'll start scaffolding your project for: "${prompt}".`;
-    const steps = [
-      "Create project structure",
-      "Install UI dependencies",
-      "Generate landing components",
-      "Prepare preview sandbox",
-      "Write initial tests",
-    ];
-    let idx = 0;
+    
     const assistant: ChatMessage = {
       id: crypto.randomUUID(),
       role: "assistant",
-      content: base + "\n\n",
+      content: session.generatedCode ? "Updating your website..." : "Generating your website...",
       createdAt: Date.now(),
     };
     appendMessage(assistant);
-    const timer = setInterval(() => {
-      idx++;
+
+    try {
+      let result;
+      
+      if (session.files) {
+        // Update existing React app
+        result = await updateWebsite(prompt, session.files);
+      } else {
+        // Generate new React app
+        result = await generateWebsite(prompt);
+      }
+      
       const next = { ...session };
       const last = next.messages[next.messages.length - 1];
       if (last && last.id === assistant.id) {
-        last.content += `• ${steps[idx - 1]}\n`;
+        last.content = session.files 
+          ? "I've updated your React application! Check the preview and code tabs to see the changes."
+          : "I've generated your React application! Check the preview and code tabs to see the result.";
       }
-      next.logs = [...next.logs, `Step ${idx}: ${steps[idx - 1]}`];
+      
+      next.files = result.files;
+      next.mainFile = result.mainFile;
+      next.generatedCode = result.files["index.html"] || result.files[result.mainFile];
+      next.logs = [...next.logs, session.files ? "React app updated successfully" : "React app generated successfully"];
+      
       onSessionChange(next);
       upsertSession(next);
-      if (idx >= steps.length) {
-        clearInterval(timer);
-        setStreaming(false);
+      toast.success(session.files ? "React app updated!" : "React app generated!");
+    } catch (error) {
+      const next = { ...session };
+      const last = next.messages[next.messages.length - 1];
+      if (last && last.id === assistant.id) {
+        last.content = "Sorry, I encountered an error. Please try again.";
       }
-    }, 700);
+      next.logs = [...next.logs, "Error: Failed to process request"];
+      onSessionChange(next);
+      upsertSession(next);
+      toast.error("Failed to process request");
+    } finally {
+      setStreaming(false);
+    }
   }
 
   return (

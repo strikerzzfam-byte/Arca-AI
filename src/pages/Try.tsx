@@ -7,8 +7,10 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { Plus, ArrowRight, Github, Figma, Sparkles } from "lucide-react";
+import { Plus, ArrowRight, Github, Figma, Sparkles, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { generateWebsite } from "@/lib/ai";
+import { createSession } from "@/lib/session";
 
 type Agent = "claude" | "gpt" | "sonnet";
 
@@ -52,13 +54,50 @@ export default function TryPage() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!promptIsValid || submitting) return;
     setSubmitting(true);
-    console.log("try_submit", { prompt, agent, planEnabled });
-    // navigate to studio with query params
-    navigate(`/studio?q=${encodeURIComponent(prompt)}&agent=${agent}&plan=${planEnabled ? "1" : "0"}`);
-    setTimeout(() => setSubmitting(false), 600);
+    
+    try {
+      // Generate React application using AI
+      const result = await generateWebsite(prompt);
+      
+      // Create session with generated files
+      const session = createSession({
+        prompt,
+        agent,
+        planEnabled,
+        files: result.files,
+        mainFile: result.mainFile,
+        generatedCode: result.files["index.html"] || result.files[result.mainFile],
+        messages: [
+          {
+            id: crypto.randomUUID(),
+            role: "user",
+            content: prompt,
+            createdAt: Date.now()
+          },
+          {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: "I've generated your React application! Check the preview and code tabs.",
+            createdAt: Date.now()
+          }
+        ]
+      });
+      
+      // Navigate to studio with session ID
+      navigate(`/studio?sid=${session.id}`);
+    } catch (error) {
+      console.error("Generation failed:", error);
+      toast({ 
+        title: "Generation failed", 
+        description: "Please try again with a different prompt.",
+        variant: "destructive"
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -148,7 +187,16 @@ export default function TryPage() {
                       onClick={handleSubmit}
                       disabled={!promptIsValid || submitting}
                     >
-                      Build now <ArrowRight className="w-4 h-4 ml-2" />
+                      {submitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          Build now <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
