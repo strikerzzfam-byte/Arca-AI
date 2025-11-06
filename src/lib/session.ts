@@ -5,6 +5,7 @@ export type ChatMessage = {
   role: "user" | "assistant";
   content: string;
   createdAt: number;
+  isThinking?: boolean;
 };
 
 export type StudioSession = {
@@ -19,6 +20,7 @@ export type StudioSession = {
   generatedCode?: string;
   files?: Record<string, string>;
   mainFile?: string;
+  terminalCommands?: string[];
 };
 
 function loadAll(): Record<string, StudioSession> {
@@ -38,13 +40,13 @@ export function createSession(seed: Partial<StudioSession>): StudioSession {
   const id = crypto.randomUUID();
   const session: StudioSession = {
     id,
-    prompt: seed.prompt || "Create a modern web application",
+    prompt: seed.prompt || "",
     agent: seed.agent || "claude",
     planEnabled: !!seed.planEnabled,
     messages: seed.messages || [],
-    logs: seed.logs || ["Session created", "Ready to build your application"],
+    logs: seed.logs || [],
     githubToken: seed.githubToken,
-    projectName: seed.projectName || "Arca AI Project",
+    projectName: seed.projectName || "",
     generatedCode: seed.generatedCode,
     files: seed.files,
     mainFile: seed.mainFile,

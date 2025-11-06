@@ -6,6 +6,7 @@ import ChatPanel from "@/components/studio/ChatPanel";
 import RightPanel from "@/components/studio/RightPanel";
 import StudioHeader from "@/components/studio/StudioHeader";
 import PublishDialog from "@/components/studio/PublishDialog";
+import LoadingAnimation from "@/components/ui/loading-animation";
 import { handleGitHubCallback } from "@/lib/github";
 import { StudioSession, createSession, loadSession, upsertSession } from "@/lib/session";
 
@@ -15,6 +16,7 @@ export default function Studio() {
   const [activeTab, setActiveTab] = useState<"preview" | "code" | "logs" | "deployments">("preview");
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [currentCode, setCurrentCode] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // establish or load session from query
   useEffect(() => {
@@ -36,6 +38,9 @@ export default function Studio() {
     } else {
       setActiveTab("preview");
     }
+    
+    // Handle generating state
+    setIsGenerating(sp.get("generating") === "true");
 
     // Handle GitHub OAuth callback
     if (sp.get("code") && sp.get("state")) {
@@ -48,6 +53,37 @@ export default function Studio() {
     upsertSession(s);
   }, []);
 
+  const saveProject = async () => {
+    if (!session || !session.files) return;
+    
+    try {
+      const projectData = {
+        name: session.projectName || 'Untitled Project',
+        description: session.prompt,
+        prompt: session.prompt,
+        files: session.files,
+        generatedCode: session.generatedCode,
+        previewUrl: '',
+        isPublic: false
+      };
+      
+      const response = await fetch('http://localhost:3001/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projectData)
+      });
+      
+      if (response.ok) {
+        alert('Project saved successfully!');
+      } else {
+        alert('Failed to save project');
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      alert('Failed to save project');
+    }
+  };
+
 
 
   const content = useMemo(() => {
@@ -59,20 +95,30 @@ export default function Studio() {
           activeTab={activeTab}
           onTabChange={(tab) => setActiveTab(tab)}
           onPublishClick={() => setPublishDialogOpen(true)}
+          onSaveProject={() => saveProject()}
         />
         <ResizablePanelGroup direction="horizontal" className="hidden lg:flex flex-1 border-t">
           <ResizablePanel defaultSize={40} minSize={30} maxSize={60} className="border-r">
-            <ChatPanel session={session} onSessionChange={onSessionChange} />
+            <ChatPanel 
+              session={session} 
+              onSessionChange={onSessionChange}
+              onShowPreview={() => setActiveTab("preview")}
+            />
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={60} minSize={40}>
-            <RightPanel 
-              session={session} 
-              forceTab={activeTab} 
-              hideTabs={true}
-              onTabChange={(tab) => setActiveTab(tab)}
-              onCodeChange={(code) => setCurrentCode(code)}
-            />
+            {isGenerating ? (
+              <LoadingAnimation />
+            ) : (
+              <RightPanel 
+                session={session} 
+                forceTab={activeTab} 
+                hideTabs={true}
+                onTabChange={(tab) => setActiveTab(tab)}
+                onCodeChange={(code) => setCurrentCode(code)}
+                terminalCommands={session.terminalCommands}
+              />
+            )}
           </ResizablePanel>
         </ResizablePanelGroup>
         <div className="lg:hidden flex-1 flex flex-col">
@@ -98,29 +144,41 @@ export default function Studio() {
 
             <TabsContent value="chat" className="flex-1 p-0 m-0">
               <div className="h-[calc(100vh-120px)]">
-                <ChatPanel session={session} onSessionChange={onSessionChange} />
+                <ChatPanel 
+                  session={session} 
+                  onSessionChange={onSessionChange}
+                  onShowPreview={() => setActiveTab("preview")}
+                />
               </div>
             </TabsContent>
             <TabsContent value="preview" className="flex-1 p-0 m-0">
               <div className="h-[calc(100vh-120px)]">
-                <RightPanel session={session} forceTab="preview" hideTabs onCodeChange={(code) => setCurrentCode(code)} />
+                {isGenerating ? (
+                  <LoadingAnimation />
+                ) : (
+                  <RightPanel session={session} forceTab="preview" hideTabs onCodeChange={(code) => setCurrentCode(code)} terminalCommands={session.terminalCommands} />
+                )}
               </div>
             </TabsContent>
             <TabsContent value="code" className="flex-1 p-0 m-0">
               <div className="h-[calc(100vh-120px)] flex flex-col">
                 <div className="flex-1 overflow-hidden">
-                  <RightPanel session={session} forceTab="code" hideTabs onCodeChange={(code) => setCurrentCode(code)} />
+                  {isGenerating ? (
+                    <LoadingAnimation />
+                  ) : (
+                    <RightPanel session={session} forceTab="code" hideTabs onCodeChange={(code) => setCurrentCode(code)} terminalCommands={session.terminalCommands} />
+                  )}
                 </div>
               </div>
             </TabsContent>
             <TabsContent value="logs" className="flex-1 p-0 m-0">
               <div className="h-[calc(100vh-120px)]">
-                <RightPanel session={session} forceTab="logs" hideTabs onCodeChange={(code) => setCurrentCode(code)} />
+                <RightPanel session={session} forceTab="logs" hideTabs onCodeChange={(code) => setCurrentCode(code)} terminalCommands={session.terminalCommands} />
               </div>
             </TabsContent>
             <TabsContent value="deployments" className="flex-1 p-0 m-0">
               <div className="h-[calc(100vh-120px)]">
-                <RightPanel session={session} forceTab="deployments" hideTabs onCodeChange={(code) => setCurrentCode(code)} />
+                <RightPanel session={session} forceTab="deployments" hideTabs onCodeChange={(code) => setCurrentCode(code)} terminalCommands={session.terminalCommands} />
               </div>
             </TabsContent>
           </Tabs>

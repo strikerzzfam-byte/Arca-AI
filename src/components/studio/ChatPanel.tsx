@@ -8,12 +8,32 @@ import { generateWebsite, updateWebsite } from "@/lib/ai";
 import { toast } from "sonner";
 import gsap from "gsap";
 
+function TypewriterText({ text, onComplete }: { text: string; onComplete?: () => void }) {
+  const [displayText, setDisplayText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 30);
+      return () => clearTimeout(timer);
+    } else if (onComplete) {
+      onComplete();
+    }
+  }, [currentIndex, text, onComplete]);
+
+  return <span>{displayText}</span>;
+}
+
 type Props = {
   session: StudioSession;
   onSessionChange(session: StudioSession): void;
+  onShowPreview?: () => void;
 };
 
-export default function ChatPanel({ session, onSessionChange }: Props) {
+export default function ChatPanel({ session, onSessionChange, onShowPreview }: Props) {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
@@ -76,19 +96,37 @@ export default function ChatPanel({ session, onSessionChange }: Props) {
       const next = { ...session };
       const last = next.messages[next.messages.length - 1];
       if (last && last.id === assistant.id) {
-        last.content = session.files 
+        // Show thinking process first if available
+        if (result.thinking) {
+          const thinkingMessage: ChatMessage = {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: result.thinking,
+            createdAt: Date.now(),
+            isThinking: true
+          };
+          next.messages.splice(-1, 0, thinkingMessage);
+        }
+        
+        last.content = result.chatMessage || (session.files 
           ? "I've updated your React application! Check the preview and code tabs to see the changes."
-          : "I've generated your React application! Check the preview and code tabs to see the result.";
+          : "I've generated your React application! Check the preview and code tabs to see the result.");
       }
       
       next.files = result.files;
       next.mainFile = result.mainFile;
-      next.generatedCode = result.files["index.html"] || result.files[result.mainFile];
+      next.generatedCode = result.files[result.mainFile] || result.files["index.html"];
       next.logs = [...next.logs, session.files ? "React app updated successfully" : "React app generated successfully"];
+      next.terminalCommands = result.terminalCommands || [];
       
       onSessionChange(next);
       upsertSession(next);
       toast.success(session.files ? "React app updated!" : "React app generated!");
+      
+      // Auto-switch to preview tab after generation
+      if (onShowPreview) {
+        setTimeout(() => onShowPreview(), 500);
+      }
     } catch (error) {
       const next = { ...session };
       const last = next.messages[next.messages.length - 1];
@@ -114,7 +152,13 @@ export default function ChatPanel({ session, onSessionChange }: Props) {
           {session.messages.map((m, index) => (
             <div key={m.id} ref={el => messageRefs.current[index] = el} className="text-sm">
               <div className="text-muted-foreground mb-1">{m.role === "user" ? "You" : "Arca"}</div>
-              <div className="whitespace-pre-wrap leading-relaxed">{m.content}</div>
+              <div className={`whitespace-pre-wrap leading-relaxed ${m.isThinking ? 'text-muted-foreground/60 italic' : ''}`}>
+                {m.role === "assistant" && m.id === session.messages[session.messages.length - 1]?.id ? (
+                  <TypewriterText text={m.content} />
+                ) : (
+                  m.content
+                )}
+              </div>
               <Separator className="my-4" />
             </div>
           ))}

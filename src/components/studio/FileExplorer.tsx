@@ -46,31 +46,7 @@ const generateFileStructure = (files: Record<string, string>): FileNode[] => {
   return structure;
 };
 
-const defaultFiles: FileNode[] = [
-  {
-    name: "src",
-    type: "folder",
-    children: [
-      { name: "App.tsx", type: "file", content: "// Main App component" },
-      { name: "index.css", type: "file", content: "/* Global styles */" },
-      { name: "main.tsx", type: "file", content: "// Entry point" },
-      {
-        name: "components",
-        type: "folder",
-        children: [
-          { name: "Header.tsx", type: "file", content: "// Header component" },
-          { name: "Hero.tsx", type: "file", content: "// Hero component" },
-          { name: "Features.tsx", type: "file", content: "// Features component" },
-        ]
-      }
-    ]
-  },
-  { name: "index.html", type: "file", content: "<!DOCTYPE html>..." },
-  { name: "package.json", type: "file", content: "{ \"name\": \"project\" }" },
-  { name: "vite.config.ts", type: "file", content: "// Vite config" },
-  { name: ".env", type: "file", content: "# Environment variables" },
-  { name: ".gitignore", type: "file", content: "node_modules/" },
-];
+const defaultFiles: FileNode[] = [];
 
 export default function FileExplorer({ onFileSelect, selectedFile, sessionFiles }: FileExplorerProps) {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(["src"]));
@@ -144,7 +120,24 @@ export default function FileExplorer({ onFileSelect, selectedFile, sessionFiles 
       </div>
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-1">
         <div className="min-h-full">
-          {(sessionFiles ? generateFileStructure(sessionFiles) : defaultFiles).map((node) => renderNode(node))}
+          {sessionFiles ? (
+            generateFileStructure(sessionFiles).map((node) => renderNode(node))
+          ) : (
+            <div className="p-2">
+              <div
+                className={cn(
+                  "flex items-center gap-1 px-2 py-1 text-sm cursor-pointer hover:bg-secondary/50 rounded-sm",
+                  selectedFile === "index.html" && "bg-primary/20 text-primary",
+                  "transition-colors"
+                )}
+                onClick={() => onFileSelect({ name: "index.html", type: "file", content: "" })}
+              >
+                <div className="w-3" />
+                <File className="h-4 w-4 text-muted-foreground" />
+                <span className="truncate">index.html</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

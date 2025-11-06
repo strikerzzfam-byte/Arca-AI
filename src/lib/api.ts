@@ -63,6 +63,21 @@ class ApiService {
       method: 'DELETE',
     });
   }
+
+  async sendMessage(message: string): Promise<{ type: string; content: string }> {
+    return this.request<{ type: string; content: string }>('/message', {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    });
+  }
+
+  async getChats(): Promise<any[]> {
+    return this.request<any[]>('/chats');
+  }
+
+  async getFrames(): Promise<any[]> {
+    return this.request<any[]>('/frames');
+  }
 }
 
 export const apiService = new ApiService();

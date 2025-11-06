@@ -58,36 +58,66 @@ export default function TryPage() {
     if (!promptIsValid || submitting) return;
     setSubmitting(true);
     
+    // Immediately redirect to studio with loading state
+    const tempSession = createSession({
+      prompt,
+      agent,
+      planEnabled,
+      messages: [
+        {
+          id: Math.random().toString(36).substring(2, 15),
+          role: "user",
+          content: prompt,
+          createdAt: Date.now()
+        },
+        {
+          id: Math.random().toString(36).substring(2, 15),
+          role: "assistant",
+          content: "Generating your application...",
+          createdAt: Date.now()
+        }
+      ]
+    });
+    
+    navigate(`/studio?sid=${tempSession.id}&tab=preview&generating=true`);
+    
     try {
       // Generate React application using AI
       const result = await generateWebsite(prompt);
       
-      // Create session with generated files
-      const session = createSession({
-        prompt,
-        agent,
-        planEnabled,
+      // Update session with generated files
+      const updatedSession = {
+        ...tempSession,
         files: result.files,
         mainFile: result.mainFile,
-        generatedCode: result.files["index.html"] || result.files[result.mainFile],
+        generatedCode: result.files[result.mainFile] || result.files["index.html"],
+        terminalCommands: result.terminalCommands,
         messages: [
+          tempSession.messages[0], // Keep user message
+          ...(result.thinking ? [{
+            id: Math.random().toString(36).substring(2, 15),
+            role: "assistant" as const,
+            content: result.thinking,
+            createdAt: Date.now(),
+            isThinking: true
+          }] : []),
           {
-            id: crypto.randomUUID(),
-            role: "user",
-            content: prompt,
-            createdAt: Date.now()
-          },
-          {
-            id: crypto.randomUUID(),
+            id: Math.random().toString(36).substring(2, 15),
             role: "assistant",
-            content: "I've generated your React application! Check the preview and code tabs.",
+            content: result.chatMessage || "I've generated your React application! Check the preview and code tabs.",
             createdAt: Date.now()
           }
         ]
-      });
+      };
       
-      // Navigate to studio with session ID
-      navigate(`/studio?sid=${session.id}`);
+      // Update the session in storage
+      const all = JSON.parse(localStorage.getItem("arca_studio_sessions") || '{}');
+      all[tempSession.id] = updatedSession;
+      localStorage.setItem("arca_studio_sessions", JSON.stringify(all));
+      
+      // Navigate to remove generating flag
+      navigate(`/studio?sid=${tempSession.id}&tab=preview`);
+      
     } catch (error) {
       console.error("Generation failed:", error);
       toast({ 

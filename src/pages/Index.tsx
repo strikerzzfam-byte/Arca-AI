@@ -42,12 +42,7 @@ const Index = () => {
     }
   ];
 
-  const team = [
-    { name: "D. Salman Khan", role: "Co-Founder" },
-    { name: "K. Karthikeyan", role: "Co-Founder" },
-    { name: "M. M. Jeevaa", role: "Co-Founder" },
-    { name: "M. Mukesh", role: "Co-Founder" }
-  ];
+  const team = [];
 
   const navigate = useNavigate();
 
@@ -422,38 +417,8 @@ const Index = () => {
               </p>
             </div>
 
-            <div
-              // variants={containerVariants}
-              className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto"
-            >
-              {team.map((member, index) => (
-                <div
-                  key={index}
-                  // variants={itemVariants}
-                  // whileHover={{ scale: 1.05, y: -10 }}
-                  className="glass-card rounded-2xl p-8 text-center group hover:neon-border transition-all duration-300"
-                >
-                  <div className="mb-6 relative mx-auto w-32 h-32">
-                    {/* Glowing frame */}
-                    <div className="absolute inset-0 rounded-full border-2 border-primary/30 group-hover:border-primary transition-colors" />
-                    <div className="absolute inset-0 rounded-full blur-xl bg-primary/20 group-hover:bg-primary/40 transition-all" />
-                    
-                    {/* Initial circle */}
-                    <div className="relative z-10 w-full h-full rounded-full bg-gradient-to-br from-primary/20 to-secondary flex items-center justify-center">
-                      <span className="text-4xl font-bold text-primary">
-                        {member.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {member.role}
-                  </p>
-                </div>
-              ))}
+            <div className="text-center text-muted-foreground">
+              <p>Team information will be available soon.</p>
             </div>
           </div>
         </div>

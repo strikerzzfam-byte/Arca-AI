@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock } from "lucide-react";
 import PreviewFrame from "./PreviewFrame";
-import Terminal from "./Terminal";
+import VirtualTerminal from "./VirtualTerminal";
 import DeploymentHistory from "./DeploymentHistory";
 import FileExplorer from "./FileExplorer";
 import type { StudioSession } from "@/lib/session";
@@ -20,11 +20,10 @@ type Props = {
   hideTabs?: boolean;
   onTabChange?: (tab: "preview" | "code" | "logs" | "deployments") => void;
   onCodeChange?: (code: string) => void;
+  terminalCommands?: string[];
 };
 
-
-
-export default function RightPanel({ session, forceTab, hideTabs, onTabChange, onCodeChange }: Props) {
+export default function RightPanel({ session, forceTab, hideTabs, onTabChange, onCodeChange, terminalCommands }: Props) {
   const [selectedFile, setSelectedFile] = useState<string>("index.html");
   const [currentCode, setCurrentCode] = useState(session.generatedCode || '<!-- Generated HTML will appear here -->');
 
@@ -38,8 +37,18 @@ export default function RightPanel({ session, forceTab, hideTabs, onTabChange, o
       setCurrentCode(session.files[selectedFile]);
     } else if (selectedFile === "index.html" && session.generatedCode) {
       setCurrentCode(session.generatedCode);
+    } else if (session.generatedCode && selectedFile === "index.html") {
+      setCurrentCode(session.generatedCode);
     }
   }, [session.files, session.generatedCode, selectedFile]);
+
+  // Auto-select index.html when code is generated
+  useEffect(() => {
+    if (session.generatedCode && !session.files) {
+      setSelectedFile("index.html");
+      setCurrentCode(session.generatedCode);
+    }
+  }, [session.generatedCode, session.files]);
 
   return (
     <div className="h-full flex flex-col">
@@ -76,12 +85,7 @@ export default function RightPanel({ session, forceTab, hideTabs, onTabChange, o
                 />
               </div>
               <div className="h-32 lg:h-48 border-t">
-                <div className="px-4 py-2 border-b bg-secondary/50">
-                  <span className="text-sm font-medium">Terminal</span>
-                </div>
-                <div className="h-[calc(100%-40px)]">
-                  <Terminal />
-                </div>
+                <VirtualTerminal autoCommands={terminalCommands} />
               </div>
             </div>
           </TabsContent>
@@ -141,12 +145,7 @@ export default function RightPanel({ session, forceTab, hideTabs, onTabChange, o
                 </div>
               </div>
               <div className="h-32 lg:h-48 border-t">
-                <div className="px-4 py-2 border-b bg-secondary/50">
-                  <span className="text-sm font-medium">Terminal</span>
-                </div>
-                <div className="h-[calc(100%-40px)]">
-                  <Terminal />
-                </div>
+                <VirtualTerminal autoCommands={terminalCommands} />
               </div>
             </div>
           </TabsContent>
@@ -164,9 +163,6 @@ export default function RightPanel({ session, forceTab, hideTabs, onTabChange, o
           </TabsContent>
         </Tabs>
       </div>
-
     </div>
   );
 }
-
-

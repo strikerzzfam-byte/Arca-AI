@@ -65,7 +65,7 @@ Run `start-dev.bat` to start both frontend and backend servers automatically.
 ## 🎯 Usage
 
 1. **Create Projects**: Use the project manager to create and organize your websites
-2. **AI-Powered Generation**: Describe your website and let AI generate the code
+2. **AI-Powered Generation**: Describe your website and let AI generate the code (supports React, TypeScript, HTML, CSS, and JavaScript)
 3. **Code Editing**: Use the responsive code editor to customize your projects
 4. **Live Preview**: See changes in real-time with the preview panel
 5. **Save & Load**: Projects are automatically saved to MongoDB Atlas

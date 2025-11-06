@@ -1,0 +1,195 @@
+/* Terminal Styles */
+.terminal-container {
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+}
+
+.terminal-manager {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+}
+
+.terminal-manager.minimized {
+  height: 32px;
+}
+
+.terminal-manager.maximized {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.terminal-header {
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.terminal-tabs {
+  flex-shrink: 0;
+  border-bottom: 1px solid #374151;
+}
+
+.terminal-tabs .tab {
+  border-right: 1px solid #4b5563;
+  transition: background-color 0.2s;
+}
+
+.terminal-tabs .tab:last-child {
+  border-right: none;
+}
+
+.terminal-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.terminal-pane {
+  height: 100%;
+}
+
+/* WebContainer Terminal */
+.webcontainer-terminal {
+  background: #1e1e1e;
+}
+
+.toolbar {
+  flex-shrink: 0;
+  border-bottom: 1px solid #374151;
+}
+
+.quick-commands {
+  flex-shrink: 0;
+  border-bottom: 1px solid #374151;
+}
+
+.quick-commands::-webkit-scrollbar {
+  height: 4px;
+}
+
+.quick-commands::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.quick-commands::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 2px;
+}
+
+/* Terminal Panel */
+.terminal-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.resize-handle:hover {
+  background: #3b82f6 !important;
+}
+
+/* XTerm Overrides */
+.xterm {
+  padding: 8px;
+}
+
+.xterm-viewport {
+  background-color: transparent !important;
+}
+
+.xterm-screen {
+  background-color: transparent !important;
+}
+
+/* Light Theme */
+.terminal-manager.light {
+  background: #ffffff;
+}
+
+.terminal-manager.light .terminal-header {
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.terminal-manager.light .terminal-tabs {
+  background: #e5e7eb;
+  border-bottom-color: #d1d5db;
+}
+
+.terminal-manager.light .terminal-tabs .tab {
+  border-right-color: #d1d5db;
+}
+
+.terminal-manager.light .terminal-tabs .tab.active {
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.webcontainer-terminal.light {
+  background: #ffffff;
+}
+
+.webcontainer-terminal.light .toolbar {
+  background: #f3f4f6;
+  color: #1f2937;
+  border-bottom-color: #d1d5db;
+}
+
+.webcontainer-terminal.light .quick-commands {
+  background: #e5e7eb;
+  border-bottom-color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .terminal-panel {
+    min-height: 200px;
+  }
+  
+  .quick-commands {
+    padding: 8px;
+  }
+  
+  .quick-commands button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Animations */
+.terminal-manager {
+  transition: height 0.2s ease-in-out;
+}
+
+.tab {
+  transition: all 0.2s ease-in-out;
+}
+
+.quick-commands button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus States */
+.terminal-container:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+/* Selection */
+.xterm .xterm-selection div {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.terminal-manager.light .xterm .xterm-selection div {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}

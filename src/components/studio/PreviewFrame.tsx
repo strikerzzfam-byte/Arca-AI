@@ -12,25 +12,13 @@ export default function PreviewFrame({ title, prompt, generatedCode }: Props) {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>${escapeHtml(title)}</title>
       <style>
-        :root { color-scheme: dark; }
-        body { margin:0; font-family: Inter, system-ui, sans-serif; background:#0b0d12; color:#e8e9ea; }
-        .hero { padding:48px 24px; text-align:center; }
-        h1 { font-size: 32px; margin: 0 0 12px; }
-        p { opacity:.8; max-width: 720px; margin: 0 auto; }
-        .box { margin: 24px auto; max-width: 880px; border-radius: 14px; border:1px solid #2a2f3a; background:linear-gradient(180deg,#141823,#0b0d12); padding:24px }
+        body { margin:0; font-family: Inter, system-ui, sans-serif; background:#0b0d12; }
       </style>
     </head>
-    <body>
-      <div class="hero">
-        <h1>Preview</h1>
-        <p>Type a prompt in the chat to generate a website!</p>
-        ${prompt ? `<p>Last prompt: <strong>${escapeHtml(prompt)}</strong></p>` : ''}
-        <div class="box">Generated website will appear here...</div>
-      </div>
-    </body>
+    <body></body>
   </html>`;
 
-  const html = generatedCode || defaultHtml;
+  const html = generatedCode && generatedCode.trim() ? generatedCode : defaultHtml;
 
   return (
     <iframe title="preview" srcDoc={html} className="w-full h-full rounded-md border" />

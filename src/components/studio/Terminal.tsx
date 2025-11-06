@@ -10,20 +10,7 @@ interface TerminalLine {
 }
 
 export default function Terminal() {
-  const [lines, setLines] = useState<TerminalLine[]>([
-    {
-      id: "1",
-      type: "output",
-      content: "Welcome to Arca Studio Terminal",
-      timestamp: Date.now(),
-    },
-    {
-      id: "2",
-      type: "output",
-      content: "Type 'help' for available commands",
-      timestamp: Date.now(),
-    },
-  ]);
+  const [lines, setLines] = useState<TerminalLine[]>([]);
   const [currentInput, setCurrentInput] = useState("");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -91,14 +78,7 @@ export default function Terminal() {
           break;
 
         case "ls":
-          output = `src/
-  components/
-  pages/
-  lib/
-  assets/
-  package.json
-  tsconfig.json
-  vite.config.ts`;
+          output = "No files available. Create a project first.";
           break;
 
         case "cd":
@@ -106,7 +86,7 @@ export default function Terminal() {
           break;
 
         case "pwd":
-          output = "/Users/arca/Projects/Arca-AI";
+          output = "/workspace";
           break;
 
         case "npm":

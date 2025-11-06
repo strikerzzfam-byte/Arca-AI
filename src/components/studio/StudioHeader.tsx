@@ -13,9 +13,10 @@ type Props = {
   onTabChange?: (tab: "preview" | "code" | "logs" | "deployments") => void;
   onPublishClick?: () => void;
   onSettingsClick?: () => void;
+  onSaveProject?: () => void;
 };
 
-export default function StudioHeader({ session, activeTab, onTabChange, onPublishClick, onSettingsClick }: Props) {
+export default function StudioHeader({ session, activeTab, onTabChange, onPublishClick, onSettingsClick, onSaveProject }: Props) {
   const projectName = session?.projectName || "Arca AI Project";
   const [isConnected, setIsConnected] = useState(isGitHubConnected());
   const [showGitHubDialog, setShowGitHubDialog] = useState(false);
@@ -150,6 +151,13 @@ export default function StudioHeader({ session, activeTab, onTabChange, onPublis
           title={isConnected ? "GitHub Connected - Click for options" : "Connect to GitHub"}
         >
           <Github className={cn("h-4 w-4", isConnected && "fill-current")} />
+        </Button>
+        <Button
+          variant="outline"
+          className="h-8 px-4 text-sm"
+          onClick={onSaveProject}
+        >
+          Save Project
         </Button>
         <Button
           variant="outline"

@@ -44,10 +44,8 @@ export default function ProjectManager({ onProjectSelect, currentProject }: Proj
     try {
       const project = await apiService.createProject({
         name: newProjectName,
-        files: [
-          { name: 'index.html', content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>New Project</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>', type: 'html' }
-        ],
-        generatedCode: '<!DOCTYPE html>\n<html>\n<head>\n  <title>New Project</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>'
+        files: [],
+        generatedCode: ''
       });
       
       setProjects([project, ...projects]);

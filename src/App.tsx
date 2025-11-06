@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import Try from "./pages/Try";
 import NotFound from "./pages/NotFound";
 import Studio from "./pages/Studio";
+import AiChat from "./pages/AiChat";
+import DatabaseView from "./pages/DatabaseView";
 // import SignIn from "./pages/SignIn";
 // import SignUp from "./pages/SignUp";
 
@@ -52,6 +54,8 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/try" element={<Try />} />
               <Route path="/studio" element={<Studio />} />
+              <Route path="/ai-chat" element={<AiChat />} />
+              <Route path="/database" element={<DatabaseView />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
