@@ -1,73 +1,79 @@
-# Welcome to your Lovable project
+# Arca Vision Nexus
 
-## Project info
+Arca Vision Nexus is a modern web application for data visualization and management, developed by ArcNex Technologies.
 
-**URL**: https://lovable.dev/projects/cc3f9c6f-3427-4afa-8c0c-a9160953bb70
+## Features
 
-## How can I edit this code?
+- 🎨 **Visual Website Builder** - Create React websites with AI assistance
+- 📝 **Responsive Code Editor** - Built-in CodeMirror editor with syntax highlighting
+- 💾 **Project Management** - Save and load projects with MongoDB Atlas
+- 🔄 **Real-time Preview** - Live preview of your websites
+- 📱 **Responsive Design** - Works on desktop, tablet, and mobile
+- 🚀 **Modern Stack** - React, TypeScript, Node.js, MongoDB
 
-There are several ways of editing your application.
+## 🚀 Getting Started
 
-**Use Lovable**
+### Frontend Setup
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/cc3f9c6f-3427-4afa-8c0c-a9160953bb70) and start prompting.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/ArcaVisionNexus/arca-vision-nexus.git
+   cd arca-vision-nexus
+   ```
 
-Changes made via Lovable will be committed automatically to this repo.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-**Use your preferred IDE**
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
+   Frontend will be available at `http://localhost:5173`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Backend Setup
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. **Install backend dependencies**:
+   ```bash
+   cd backend
+   npm install
+   ```
 
-Follow these steps:
+2. **Configure MongoDB Atlas**:
+   - Update `backend/.env` with your MongoDB connection string
+   - Replace `<username>` and `<password>` with your credentials
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. **Start backend server**:
+   ```bash
+   npm run dev
+   ```
+   Backend API will be available at `http://localhost:3001`
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Quick Start (Both Servers)
 
-# Step 3: Install the necessary dependencies.
-npm i
+Run `start-dev.bat` to start both frontend and backend servers automatically.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## 🛠️ Tech Stack
 
-**Edit a file directly in GitHub**
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS, shadcn/ui
+- **Code Editor**: CodeMirror 6 with syntax highlighting
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB Atlas
+- **UI Components**: Radix UI, Lucide Icons
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🎯 Usage
 
-**Use GitHub Codespaces**
+1. **Create Projects**: Use the project manager to create and organize your websites
+2. **AI-Powered Generation**: Describe your website and let AI generate the code
+3. **Code Editing**: Use the responsive code editor to customize your projects
+4. **Live Preview**: See changes in real-time with the preview panel
+5. **Save & Load**: Projects are automatically saved to MongoDB Atlas
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📝 License
 
-## What technologies are used for this project?
+This project is licensed under the MIT License.
 
-This project is built with:
+## 📞 Contact
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/cc3f9c6f-3427-4afa-8c0c-a9160953bb70) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+For any inquiries, please contact us at info@arcanex.tech.
